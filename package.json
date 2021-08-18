@@ -1,7 +1,7 @@
 {
-  "name": "@pro-element/core",
-  "version": "0.0.1",
-  "description": "",
+  "name": "pro-element",
+  "version": "0.0.6",
+  "description": "🔨 Hooks and props for creating pro components",
   "module": "es/index.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -15,10 +15,11 @@
     "url": "https://github.com/OrekiSH/pro-element"
   },
   "keywords": [
-    "babel",
-    "plugin",
+    "element-ui",
+    "element-plus",
     "vue",
     "vuecomponent",
+    "vue-next",
     "vue3"
   ],
   "authors": [

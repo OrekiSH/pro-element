@@ -29,4 +29,24 @@ export interface ICustomRenderProps {
   attrs?: Record<string, any>
   listeners?: Record<string, Function>
 }
+
+// list group component, like select
+export interface IOptionProps {
+  valueKey: string;
+  labelKey: string;
+  childrenKey: string;
+  disabledKey: string;
+}
+
+// textField component color
+export interface ITextFeildColorProps {
+  color: string
+  borderColor: string
+  backgroundColor: string
+}
 ```
+
+## Hooks
+
+- use-popover: bind popover into element
+- use-text-field-color: set color for textField
