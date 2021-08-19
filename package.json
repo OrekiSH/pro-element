@@ -35,14 +35,17 @@
     "eslint-plugin-import": "^2.23.4",
     "husky": "^7.0.1",
     "lint-staged": "^11.0.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^4.3.2"
   },
   "scripts": {
-    "build": "npm run build:cjs && npm run build:es",
+    "build-watch": "npm-run-all --parallel build:*-watch",
     "build:es": "tsc --p ./tsconfig.es.json",
     "build:cjs": "tsc",
-    "lint": "eslint .",
-    "lintfix": "eslint --fix .",
+    "build:es-watch": "tsc -w --p ./tsconfig.es.json",
+    "build:cjs-watch": "tsc -w",
+    "lint": "eslint --resolve-plugins-relative-to . .",
+    "lintfix": "eslint --resolve-plugins-relative-to . --fix .",
     "prepare": "husky install",
     "prepublishOnly": "npm run build",
     "pre-commit": "lint-staged"

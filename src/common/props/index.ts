@@ -224,3 +224,28 @@ export interface ITextFeildColorProps {
   borderColor: string
   backgroundColor: string
 }
+
+export const splitModeProps = {
+  /**
+   * @language=zh
+   * 分隔模式，双向绑定值为根据splitChar分隔的数组
+   */
+  split: {
+    type: Boolean,
+    default: false,
+  },
+
+  /**
+   * @language=zh
+   * 分隔字符串
+   */
+  splitChar: {
+    type: String,
+    default: ' ',
+  },
+};
+
+export interface ISplitModeProps {
+  split: boolean
+  splitChar: string
+}

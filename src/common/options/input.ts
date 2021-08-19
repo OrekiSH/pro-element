@@ -1,4 +1,6 @@
-import { popoverProps, textFieldColorProps, textFieldProps } from '../props';
+import {
+  popoverProps, textFieldColorProps, textFieldProps, splitModeProps,
+} from '../props';
 
 export const InputOption = {
   name: 'ElemInput',
@@ -9,6 +11,7 @@ export const InputOption = {
     ...popoverProps,
     ...textFieldProps,
     ...textFieldColorProps,
+    ...splitModeProps,
   },
 
   mounted() {
