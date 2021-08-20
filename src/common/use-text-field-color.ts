@@ -1,68 +1,60 @@
 import { ITextFeildColorProps } from './props';
 
 interface IGenUseTextFeildColorOptions {
-  reactive: Function
   watch: Function
   onMounted: Function
+  onUnmounted: Function
   getCurrentInstance: Function
+  ref: Function
 }
 
 export function genUseTextFeildColor(opts: IGenUseTextFeildColorOptions) {
   const {
-    reactive,
     watch,
     onMounted,
+    onUnmounted,
     getCurrentInstance,
+    ref,
   } = opts || {};
 
   return function useTextFeildColor(props: ITextFeildColorProps) {
-    const state = reactive({
-      el: null as any,
-    });
+    const elRef = ref(null);
 
-    function setBorderColor() {
-      if (state.el) {
-        state.el.style.borderColor = props.borderColor;
-      }
-    }
-
-    function setBackgroundColor() {
-      if (state.el) {
-        state.el.style.backgroundColor = props.backgroundColor;
-      }
-    }
-
-    function setFontColor() {
-      if (state.el) {
-        state.el.style.color = props.color;
+    function set(prop: keyof ITextFeildColorProps) {
+      if (elRef.value) {
+        elRef.value.style[prop] = props[prop];
       }
     }
 
     watch(() => props.color, () => {
-      setFontColor();
+      set('color');
     });
 
     watch(() => props.backgroundColor, () => {
-      setBackgroundColor();
+      set('backgroundColor');
     });
 
     watch(() => props.borderColor, () => {
-      setBorderColor();
+      set('borderColor');
     });
 
     const vm = getCurrentInstance();
 
     onMounted(() => {
       // @ts-ignore
-      const el = vm?.refs?.input?.$el;
+      const el = vm?.refs?.root?.$el;
       if (!el) return;
 
-      state.el = el.querySelector('.el-input__inner')
+      elRef.value = el.querySelector('.el-input__inner')
         || el.querySelector('.el-textarea__inner');
 
-      setBorderColor();
-      setBackgroundColor();
-      setFontColor();
+      set('color');
+      set('borderColor');
+      set('backgroundColor');
+    });
+
+    onUnmounted(() => {
+      elRef.value = null;
     });
   };
 }

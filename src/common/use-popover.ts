@@ -2,34 +2,37 @@ import { debounce } from '@util-lite/debounce';
 import { IPopoverProps } from './props';
 
 interface IGenUsePopoverOptions {
-  reactive: Function,
+  ref: Function,
   watch: Function,
   onMounted: Function,
   onUnmounted: Function,
-  toRefs: Function,
   visibleKey: string,
 }
 
 export function genUsePopover(options: IGenUsePopoverOptions) {
   const {
-    reactive,
+    ref,
     watch,
     onMounted,
-    toRefs,
     onUnmounted,
     visibleKey,
   } = options || {};
 
   return function usePopover(props: IPopoverProps) {
-    const state = reactive({
-      // scroll container, 滚动容器
-      scrollEl: null,
-      // timer id for hide popover, 隐藏popover的定时器id
-      timerId: null,
-      // popover if visible, popover是否可见
-      innerVisible: false,
-      debounceUpdatePopper: null,
-    });
+    // popover if visible, popover是否可见
+    const innerVisibleRef = ref(false);
+    // scroll container, 滚动容器
+    const scrollElRef = ref(null);
+    // timer id for hide popover, 隐藏popover的定时器id
+    const timerIdRef = ref(null);
+    const debounceUpdatePopperRef = ref(null);
+
+    function cleanUp() {
+      innerVisibleRef.value = null;
+      scrollElRef.value = null;
+      timerIdRef.value = null;
+      debounceUpdatePopperRef.value = null;
+    }
 
     function genPopoverAttrs(className: string, opts = {
       trigger: 'manual',
@@ -47,24 +50,24 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
       }
 
       return {
-        [visibleKey]: state.innerVisible,
+        [visibleKey]: innerVisibleRef.value,
         ...attrs,
         ...popoverAttrs,
       };
     }
 
     function delayHidePopover() {
-      if (props.duration && state.innerVisible) {
-        state.timerId = setTimeout(() => {
-          state.innerVisible = false;
+      if (props.duration && innerVisibleRef.value) {
+        timerIdRef.value = setTimeout(() => {
+          innerVisibleRef.value = false;
         }, props.duration);
       }
     }
 
     watch(() => props.popoverVisible, (val: boolean) => {
-      state.innerVisible = val;
+      innerVisibleRef.value = val;
 
-      if (!val && state.timerId) clearTimeout(state.timerId);
+      if (!val && timerIdRef.value) clearTimeout(timerIdRef.value);
       if (val) delayHidePopover();
     });
 
@@ -72,7 +75,7 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
       const {
         popoverVisible, scrollWrapper, scrollDebounce,
       } = props;
-      state.innerVisible = popoverVisible;
+      innerVisibleRef.value = popoverVisible;
 
       if (scrollWrapper) {
         // 滚动元素, scroll elment
@@ -81,15 +84,15 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
           : document.querySelector(scrollWrapper);
 
         if (el) {
-          state.scrollEl = el;
-          state.debounceUpdatePopper = debounce(() => {
+          scrollElRef.value = el;
+          debounceUpdatePopperRef.value = debounce(() => {
             // @ts-ignore
-            const ref = this.$refs.popover;
-            if (ref && typeof ref.updatePopper === 'function') {
-              ref.updatePopper();
+            const { popover } = this.$refs;
+            if (popover && typeof popover.updatePopper === 'function') {
+              popover.updatePopper();
             }
           }, scrollDebounce);
-          el.addEventListener('scroll', state.debounceUpdatePopper);
+          el.addEventListener('scroll', debounceUpdatePopperRef.value);
         }
       }
 
@@ -97,15 +100,17 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
     });
 
     onUnmounted(() => {
-      if (state.scrollEl && state.debounceUpdatePopper) {
-        state.scrollEl.removeEventListener('scroll', state.debounceUpdatePopper);
+      if (scrollElRef.value && debounceUpdatePopperRef.value) {
+        scrollElRef.value.removeEventListener('scroll', debounceUpdatePopperRef.value);
       }
 
-      if (state.timerId) clearTimeout(state.timerId);
+      if (timerIdRef.value) clearTimeout(timerIdRef.value);
+
+      cleanUp();
     });
 
     return {
-      ...toRefs(state),
+      innerVisible: innerVisibleRef,
       genPopoverAttrs,
     };
   };

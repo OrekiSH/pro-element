@@ -1,5 +1,5 @@
 import {
-  onMounted, reactive, watch, getCurrentInstance,
+  onMounted, onUnmounted, ref, watch, getCurrentInstance,
 } from '@vue/composition-api';
 import { ITextFeildColorProps } from '../common/props';
 import { genUseTextFeildColor } from '../common/use-text-field-color';
@@ -7,7 +7,8 @@ import { genUseTextFeildColor } from '../common/use-text-field-color';
 export function useTextFeildColor(props: ITextFeildColorProps) {
   return genUseTextFeildColor({
     onMounted,
-    reactive,
+    onUnmounted,
+    ref,
     watch,
     getCurrentInstance,
   })(props);
