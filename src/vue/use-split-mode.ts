@@ -61,7 +61,7 @@ export function useSplitMode(
   }));
 
   return {
-    innerVal: innerValRef.value,
+    innerVal: innerValRef,
     listeners,
   };
 }
