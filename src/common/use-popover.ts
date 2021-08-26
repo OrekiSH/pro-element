@@ -2,11 +2,12 @@ import { debounce } from '@util-lite/debounce';
 import { IPopoverProps } from './props';
 
 interface IGenUsePopoverOptions {
-  ref: Function,
-  watch: Function,
-  onMounted: Function,
-  onUnmounted: Function,
-  visibleKey: string,
+  ref: Function
+  watch: Function
+  onMounted: Function
+  onUnmounted: Function
+  visibleKey: string
+  computed: Function
 }
 
 export function genUsePopover(options: IGenUsePopoverOptions) {
@@ -16,9 +17,10 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
     onMounted,
     onUnmounted,
     visibleKey,
+    computed,
   } = options || {};
 
-  return function usePopover(props: IPopoverProps) {
+  return function usePopover(props: IPopoverProps, className: string) {
     // popover if visible, popover是否可见
     const innerVisibleRef = ref(false);
     // scroll container, 滚动容器
@@ -34,7 +36,7 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
       debounceUpdatePopperRef.value = null;
     }
 
-    function genPopoverAttrs(className: string, opts = {
+    function genPopoverAttrs(popperClass: string, opts = {
       trigger: 'manual',
       placement: 'top',
     }) {
@@ -42,7 +44,7 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
       const attrs = {
         ...opts,
         disabled: !popover && !popoverAttrs.content,
-        'popper-class': className,
+        'popper-class': popperClass,
       } as Record<string, any>;
 
       if (typeof popover === 'string') {
@@ -109,9 +111,12 @@ export function genUsePopover(options: IGenUsePopoverOptions) {
       cleanUp();
     });
 
+    const innerPopoverAttrs = computed(() => genPopoverAttrs(className));
+
     return {
       innerVisible: innerVisibleRef,
       genPopoverAttrs,
+      innerPopoverAttrs,
     };
   };
 }

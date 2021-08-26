@@ -26,7 +26,7 @@ export function useSplitModeNext(
       return attrs.type === 'number' ? +val : val;
     }
 
-    return val.split(props.splitChar);
+    return val === '' ? [] : val.split(props.splitChar);
   }
 
   const innerValRef = ref(genInnerVal());
@@ -37,10 +37,6 @@ export function useSplitModeNext(
 
   const listeners = computed(() => ({
     ...attrs,
-    'onUpdate:modelValue': (val: string) => {
-      const input = attrs?.['onUpdate:modelValue'];
-      if (typeof input === 'function') input(genOuterVal(val));
-    },
     onInput: (val: string) => {
       const input = attrs?.onInput;
       if (typeof input === 'function') input(genOuterVal(val));
@@ -57,7 +53,6 @@ export function useSplitModeNext(
         const tokens = genOuterVal(innerValRef.value);
         if (Array.isArray(tokens)) {
           const val = tokens.filter(Boolean);
-          emit('input', val);
           emit('update:modelValue', val);
           emit('change', val);
         }
@@ -66,7 +61,7 @@ export function useSplitModeNext(
   }));
 
   return {
-    innerVal: innerValRef.value,
+    innerVal: innerValRef,
     listeners,
   };
 }

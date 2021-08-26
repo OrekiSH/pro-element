@@ -1,9 +1,4 @@
-export const popoverProps = {
-  lite: {
-    type: Boolean,
-    default: true,
-  },
-
+const commonPopoverProps = {
   /**
    * popover visible
    * 弹出框是否显示
@@ -30,14 +25,18 @@ export const popoverProps = {
     type: Object,
     default() { return {}; },
   },
+};
 
-  /**
-   * @language=zh
-   * 弹出框内容/渲染函数
-   */
-  popover: {
-    type: [String, Function],
-    default: '',
+interface ICommonPopoverProps {
+  popoverVisible: boolean;
+  popoverAttrs: Record<string, any>;
+  popoverListeners: Record<string, any>;
+}
+
+const controlPopoverProps = {
+  lite: {
+    type: Boolean,
+    default: true,
   },
 
   /**
@@ -68,15 +67,29 @@ export const popoverProps = {
   },
 };
 
-export interface IPopoverProps {
+interface IControlPopoverProps {
   lite: boolean;
-  popoverVisible: boolean;
-  popoverAttrs: Record<string, any>;
-  popoverListeners: Record<string, any>;
-  popover: string | Function;
   scrollWrapper: string;
   scrollDebounce: number;
   duration: number;
+}
+
+export const popoverProps = {
+  ...commonPopoverProps,
+  ...controlPopoverProps,
+
+  /**
+   * @language=zh
+   * 弹出框内容/渲染函数
+   */
+  popover: {
+    type: [String, Function],
+    default: '',
+  },
+};
+
+export interface IPopoverProps extends ICommonPopoverProps, IControlPopoverProps {
+  popover: string | Function;
 }
 
 export const textFieldProps = {
@@ -100,7 +113,7 @@ export const textFieldProps = {
 
   /**
    * @language=zh
-   * 尾部图标类名/渲染函数
+   * 尾部内容/渲染函数
    */
   suffix: {
     type: [String, Function],
@@ -109,7 +122,7 @@ export const textFieldProps = {
 
   /**
    * @language=zh
-   * 首部图标类名/渲染函数
+   * 首部内容/渲染函数
    */
   prefix: {
     type: [String, Function],
@@ -248,4 +261,179 @@ export const splitModeProps = {
 export interface ISplitModeProps {
   split: boolean
   splitChar: string
+}
+
+export interface ICommonColumnProps {
+  placeholder?: string | Function
+  attrs?: Record<string, any>
+  listeners?: Record<string, Function>
+}
+
+export const imageColumnProps = {
+  ...commonPopoverProps,
+  /**
+   * @language=zh
+   * 图片类型的列是否启用预览
+   */
+  previewVisible: {
+    type: Boolean,
+    default: true,
+  },
+
+  /**
+   * @language=zh
+   * 图片类型的列图片地址转换函数
+   */
+  transformImageSrc: {
+    type: Function,
+    default: null,
+  },
+};
+
+export interface IImageColumnProps extends ICommonPopoverProps, ICommonColumnProps {
+  previewVisible: boolean
+  transformImageSrc: Function
+}
+
+export type TAlign = 'left' | 'center' | 'right';
+
+export const tableProps = {
+  /**
+   * @language=zh
+   * 表格数据
+   */
+  data: {
+    type: Array,
+    default() { return []; },
+  },
+
+  /**
+   * @language=zh
+   * 表格列schema
+   */
+  columns: {
+    type: Array,
+    default() { return []; },
+  },
+
+  /**
+   * @language=zh
+   * 表格是否加载中
+   */
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+
+  /**
+   * @language=zh
+   * 全局选中列表
+   */
+  selection: {
+    type: Array,
+    default() { return []; },
+  },
+
+  /**
+   * @language=zh
+   * 全局单选选中项
+   */
+  selectionItem: {
+    type: Object,
+    default: null,
+  },
+
+  /**
+   * @language=zh
+   * 为true时先选中的在全局选中列表的后面(栈)， 默认先选中的在全局选中列表的前面(队列)
+   */
+  stackSelection: {
+    type: Boolean,
+    default: false,
+  },
+
+  /**
+   * @language=zh
+   * 全局单元格对齐方式, left/center/right
+   */
+  align: {
+    type: String,
+    default: 'left',
+  },
+
+  /**
+   * @language=zh
+   * 全局表头对齐方式, left/center/right
+   */
+  headerAlign: {
+    type: String,
+    default: 'left',
+  },
+
+  /**
+   * @language=zh
+   * 当内容过长被隐藏时显示 tooltip
+   */
+  showOverflowTooltip: {
+    type: Boolean,
+    default: true,
+  },
+
+  /**
+   * @language=zh
+   * 全局列最小宽度
+   */
+  minWidth: {
+    type: [Number, String],
+    default: 100,
+  },
+
+  /**
+   * @language=zh
+   * 当单元格的值为空字符串/`null`/`undefined`时的后备渲染内容
+   */
+  placeholder: {
+    type: String,
+    default: '',
+  },
+
+  /**
+   * @language=zh
+   * 可输入组件是否回车换行
+   */
+  enterChangeLine: {
+    type: Boolean,
+    default: false,
+  },
+
+  ...controlPopoverProps,
+};
+
+export interface ITableProps extends IControlPopoverProps {
+  loading: boolean
+  data: Record<string, any>[]
+  columns: Record<string, any>[]
+  selection: Record<string, any>[]
+  align: TAlign
+  headerAlign: TAlign
+  showOverflowTooltip: boolean
+  minWidth: number | string
+  placeholder: string | Function
+  enterChangeLine: boolean
+}
+
+export interface ITableColumnProps extends ICommonColumnProps {
+  label?: string | Function
+  prop?: string
+  render?: Function
+  visible?: boolean
+  previewProp?: boolean
+  children?: ITableColumnProps[]
+}
+
+export interface IPopoverWrapperProps {
+  lite: boolean
+  inner: JSX.Element
+  innerPopoverAttrs: Record<string, any>
+  popover: string | Function
 }

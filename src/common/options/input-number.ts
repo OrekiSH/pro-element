@@ -1,9 +1,9 @@
 import {
-  popoverProps, textFieldColorProps, textFieldProps, splitModeProps,
+  popoverProps, textFieldColorProps, textFieldProps,
 } from '../props';
 
-export const InputOption = {
-  name: 'ElemInput',
+export const InputNumberOption = {
+  name: 'ElemInputNumber',
 
   inheritAttrs: false,
 
@@ -11,17 +11,16 @@ export const InputOption = {
     ...popoverProps,
     ...textFieldProps,
     ...textFieldColorProps,
-    ...splitModeProps,
   },
 
   mounted() {
     // @ts-ignore
-    const ref = this.$refs.root;
-    if (!ref) return;
+    const input = this.$refs?.root?.$el?.querySelector?.('input');
+    if (!input) return;
 
     ['focus', 'blur', 'select'].forEach((k) => {
       // @ts-ignore
-      this[k] = ref[k];
+      this[k] = (...args) => input[k](...args);
     });
   },
 };

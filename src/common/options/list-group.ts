@@ -11,5 +11,15 @@ export const ListGroupOption = {
     ...popoverProps,
     ...textFieldColorProps,
     ...optionProps,
+
+    /**
+     * @language=zh
+     * 选择数据列表
+     * Array<{ label: string, value: any, disabled: boolean, children?: Array }>
+     */
+    options: {
+      type: Array,
+      default() { return []; },
+    },
   },
 };

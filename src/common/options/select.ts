@@ -1,5 +1,5 @@
 import {
-  popoverProps, textFieldColorProps, textFieldProps, optionProps,
+  popoverProps, textFieldColorProps, optionProps,
 } from '../props';
 
 export const SelectOption = {
@@ -9,7 +9,6 @@ export const SelectOption = {
 
   props: {
     ...popoverProps,
-    ...textFieldProps,
     ...textFieldColorProps,
     ...optionProps,
 
@@ -22,11 +21,29 @@ export const SelectOption = {
       type: Array,
       default() { return []; },
     },
+
+    /**
+     * @language=zh
+     * 首部内容/渲染函数
+     */
+    prefix: {
+      type: [String, Function],
+      default: '',
+    },
+
+    /**
+     * @language=zh
+     * 首部图标类名/渲染函数
+     */
+    prefixIcon: {
+      type: String,
+      default: '',
+    },
   },
 
   mounted() {
     // @ts-ignore
-    const ref = this.$refs.select;
+    const ref = this.$refs.root;
     if (!ref) return;
 
     ['focus', 'blur'].forEach((k) => {

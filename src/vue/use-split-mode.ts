@@ -26,7 +26,7 @@ export function useSplitMode(
       return attrs.type === 'number' ? +val : val;
     }
 
-    return val.split(props.splitChar);
+    return val === '' ? [] : val.split(props.splitChar);
   }
 
   const innerValRef = ref(genInnerVal());
